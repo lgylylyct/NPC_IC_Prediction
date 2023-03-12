@@ -170,6 +170,80 @@ class DenseDeepGCN(torch.nn.Module):
             assert False, "init_strategy is {}, must be ['trunc_normal','kaiming_normal']"
 
 
+class Projection_MLP(torch.nn.Module):
+    def __init__(
+        self,
+        in_dims,
+        hidden_dims,
+        out_dims,
+        num_layers,
+        norm,
+        act,
+        last_norm,
+        dropout=0.0,
+    ):
+        super(Projection_MLP, self).__init__()
+
+        self.in_dims = in_dims
+        if isinstance(hidden_dims, int):
+            self.hidden_dims = [hidden_dims] * (num_layers - 1)
+        else:
+            self.hidden_dims = hidden_dims
+
+        self.out_dims = out_dims
+        self.num_layers = num_layers
+
+        if norm == "bn":
+            cls_norm = nn.BatchNorm1d
+            self.bias = False
+        else:
+            cls_norm = nn.Identity
+            self.bias = True
+
+        if act == "relu":
+            cls_act = nn.ReLU
+        else:
+            cls_act = nn.Identity
+
+        if last_norm == "bn":
+            cls_last_norm = nn.BatchNorm1d
+            self.last_bias = False
+        else:
+            cls_last_norm = nn.Identity
+            self.last_bias = True
+
+        self.layer1 = nn.Sequential(
+            nn.Linear(self.in_dims, self.hidden_dims[0], bias=self.bias),
+            cls_norm(self.hidden_dims[0]),
+            cls_act(),
+            nn.Dropout(dropout),
+        )
+        for i in range(1, self.num_layers - 1):
+            setattr(
+                self,
+                "layer{}".format(i + 1),
+                nn.Sequential(
+                    nn.Linear(
+                        self.hidden_dims[i - 1], self.hidden_dims[i], bias=self.bias
+                    ),
+                    cls_norm(self.hidden_dims[i]),
+                    cls_act(),
+                    nn.Dropout(dropout),
+                ),
+            )
+        self.lase_layer = nn.Sequential(
+            nn.Linear(self.hidden_dims[-1], self.out_dims, bias=self.last_bias),
+            cls_last_norm(self.out_dims),
+        )
+
+    def forward(self, x):
+        x = self.layer1(x)
+        for i in range(1, self.num_layers - 1):
+            x = getattr(self, "layer{}".format(i + 1))(x)
+        x = self.lase_layer(x)
+
+        return x
+
 class GCN_NPCIC(torch.nn.Module):
     def __init__(self, cfg, in_channels, logger=None):
         super(GCN_NPCIC, self).__init__()

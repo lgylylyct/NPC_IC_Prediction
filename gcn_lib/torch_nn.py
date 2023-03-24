@@ -1,3 +1,4 @@
+# refer to https://github.com/lightaime/deep_gcns_torch/blob/master/gcn_lib/dense/torch_nn.py
 # @article{li2021deepgcns_pami,
 #   title={Deepgcns: Making gcns go as deep as cnns},
 #   author={Li, Guohao and M{\"u}ller, Matthias and Qian, Guocheng and Perez, Itzel Carolina Delgadillo and Abualshour, Abdulellah and Thabet, Ali Kassem and Ghanem, Bernard},
@@ -5,8 +6,6 @@
 #   year={2021},
 #   publisher={IEEE}
 # }
-
-# based on https://github.com/lightaime/deep_gcns_torch/blob/master/gcn_lib/dense/torch_nn.py
 
 import torch
 from torch import nn
@@ -70,8 +69,6 @@ class BasicConv(Seq):
         super(BasicConv, self).__init__(*m)
 
 
-
-
 def batched_index_select(x, idx):
     r"""fetches neighbors features from a given neighbor idx
 
@@ -92,5 +89,7 @@ def batched_index_select(x, idx):
 
     x = x.transpose(2, 1)
     feature = x.contiguous().view(batch_size * num_vertices, -1)[idx, :]
-    feature = feature.view(batch_size, num_vertices, k, num_dims).permute(0, 3, 1, 2).contiguous()
+    feature = (
+        feature.view(batch_size, num_vertices, k, num_dims).permute(0, 3, 1, 2).contiguous()
+    )
     return feature

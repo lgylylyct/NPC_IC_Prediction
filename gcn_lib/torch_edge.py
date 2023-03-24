@@ -1,3 +1,4 @@
+# refer to https://github.com/lightaime/deep_gcns_torch/blob/master/gcn_lib/dense/torch_edge.py
 # @article{li2021deepgcns_pami,
 #   title={Deepgcns: Making gcns go as deep as cnns},
 #   author={Li, Guohao and M{\"u}ller, Matthias and Qian, Guocheng and Perez, Itzel Carolina Delgadillo and Abualshour, Abdulellah and Thabet, Ali Kassem and Ghanem, Bernard},
@@ -5,8 +6,6 @@
 #   year={2021},
 #   publisher={IEEE}
 # }
-
-# base on https://github.com/lightaime/deep_gcns_torch/blob/master/gcn_lib/dense/torch_edge.py
 
 import torch
 from torch import nn
@@ -66,7 +65,11 @@ def dense_knn_matrix(x, k=16):
         x = x.transpose(2, 1).squeeze(-1)
         batch_size, n_points, n_dims = x.shape
         _, nn_idx = torch.topk(-pairwise_distance(x.detach()), k=k)
-        center_idx = torch.arange(0, n_points, device=x.device).expand(batch_size, k, -1).transpose(2, 1)
+        center_idx = (
+            torch.arange(0, n_points, device=x.device)
+            .expand(batch_size, k, -1)
+            .transpose(2, 1)
+        )
     return torch.stack((nn_idx, center_idx), dim=0)
 
 
@@ -108,7 +111,9 @@ class DilatedKnnGraph(nn.Module):
         B, C, N = x.shape
         edge_index = []
         for i in range(B):
-            edgeindex = self.knn(x[i].contiguous().transpose(1, 0).contiguous(), self.k * self.dilation)
+            edgeindex = self.knn(
+                x[i].contiguous().transpose(1, 0).contiguous(), self.k * self.dilation
+            )
             edgeindex = edgeindex.view(2, N, self.k * self.dilation)
             edge_index.append(edgeindex)
         edge_index = torch.stack(edge_index, dim=1)

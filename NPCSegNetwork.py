@@ -125,17 +125,22 @@ class NNUnetDecoder(nn.Module):
 
 
 class NNUnetNPC(nn.Module):  #
-    def __init__(self, medium):
+    def __init__(self, cfg):
         super(NNUnetNPC, self).__init__()
 
-        self.input_channel = len(medium["config"]["modalities"])
-        seg_channel = len(medium["config"]["roi_masks"]) + 1
+        input_channel = 0
+        seg_channel = 1
+        for s in cfg.MRI_sequences:
+            if "mask" not in s:
+                input_channel += 1
+            else:
+                seg_channel += 1
 
-        channel_rate = int(medium["config"]["channel_rate"])
-        layer_channels = np.array(medium["config"]["layer_channels"], dtype=np.int)
+        channel_rate = int(cfg.channel_rate)
+        layer_channels = np.array(cfg.layer_channels, dtype=np.int)
         layer_channels = layer_channels * channel_rate
 
-        self.nnunet_encoder = NNUnetEncoder(self.input_channel, layer_channels)
+        self.nnunet_encoder = NNUnetEncoder(input_channel, layer_channels)
         self.nnunet_decoder = NNUnetDecoder(layer_channels)
         self.header = nn.Conv3d(layer_channels[0], seg_channel, kernel_size=1)
 
@@ -159,9 +164,4 @@ class NNUnetNPC(nn.Module):  #
         out = self.header(de_fs[-1])
 
         return out
-
-
-def getNetwork(medium):
-    if medium["config"]["network"] == "NNUnet":
-        return NNUnetNPC(medium)
 

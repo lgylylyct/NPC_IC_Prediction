@@ -134,7 +134,8 @@ class DenseDeepGCN(torch.nn.Module):
 
     def _init_network(self, init_strategy):
         if init_strategy is None:
-            self.logger.warning("No initialization")
+            if self.logger is not None:
+                self.logger.warning("No initialization")
             for m in self.modules():
                 if isinstance(m, (nn.Conv2d, nn.BatchNorm2d)):
                     if m.bias is not None:
@@ -143,7 +144,8 @@ class DenseDeepGCN(torch.nn.Module):
         elif init_strategy == "trunc_normal":
             for m in self.modules():
                 if isinstance(m, (nn.Conv2d, nn.Linear)):
-                    self.logger.warning("trunc_normal")
+                    if self.logger is not None:
+                        self.logger.warning("trunc_normal")
                     nn.init.trunc_normal_(m.weight, std=0.02)
                     if m.bias is not None:
                         nn.init.constant_(m.bias, 0)
@@ -154,12 +156,14 @@ class DenseDeepGCN(torch.nn.Module):
             for m in self.modules():
                 if isinstance(m, nn.Conv2d):
                     if init_strategy == "kaiming_normal2":
-                        self.logger.warning("kaiming_normal2")
+                        if self.logger is not None:
+                            self.logger.warning("kaiming_normal2")
                         nn.init.kaiming_normal_(
                             m.weight, mode="fan_out", nonlinearity="relu"
                         )
                     else:
-                        self.logger.warning("kaiming_normal")
+                        if self.logger is not None:
+                            self.logger.warning("kaiming_normal")
                         nn.init.kaiming_normal_(m.weight)
                     if m.bias is not None:
                         nn.init.constant_(m.bias, 0)

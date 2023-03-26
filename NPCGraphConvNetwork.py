@@ -48,15 +48,7 @@ class DenseDeepGCN(torch.nn.Module):
             if cfg.block.lower() == "res":
                 seq.append(
                     ResDynBlock2d(
-                        channels,
-                        k,
-                        int(dilate),
-                        conv,
-                        act,
-                        norm,
-                        bias,
-                        stochastic,
-                        epsilon,
+                        channels, k, int(dilate), conv, act, norm, bias, stochastic, epsilon,
                     )
                 )
             elif cfg.block.lower() == "dense":
@@ -77,15 +69,7 @@ class DenseDeepGCN(torch.nn.Module):
             else:
                 seq.append(
                     PlainDynBlock2d(
-                        channels,
-                        k,
-                        int(dilate),
-                        conv,
-                        act,
-                        norm,
-                        bias,
-                        stochastic,
-                        epsilon,
+                        channels, k, int(dilate), conv, act, norm, bias, stochastic, epsilon,
                     )
                 )
             dilate += grow_num
@@ -95,9 +79,7 @@ class DenseDeepGCN(torch.nn.Module):
             fusion_dims = int(channels + c_growth * (self.n_blocks - 1))
         elif cfg.block.lower() == "dense":
             fusion_dims = int(
-                (channels + channels + c_growth * (self.n_blocks - 1))
-                * self.n_blocks
-                // 2
+                (channels + channels + c_growth * (self.n_blocks - 1)) * self.n_blocks // 2
             )
         else:
             fusion_dims = int(channels + c_growth * (self.n_blocks - 1))
@@ -158,9 +140,7 @@ class DenseDeepGCN(torch.nn.Module):
                     if init_strategy == "kaiming_normal2":
                         if self.logger is not None:
                             self.logger.warning("kaiming_normal2")
-                        nn.init.kaiming_normal_(
-                            m.weight, mode="fan_out", nonlinearity="relu"
-                        )
+                        nn.init.kaiming_normal_(m.weight, mode="fan_out", nonlinearity="relu")
                     else:
                         if self.logger is not None:
                             self.logger.warning("kaiming_normal")
@@ -176,15 +156,7 @@ class DenseDeepGCN(torch.nn.Module):
 
 class Projection_MLP(torch.nn.Module):
     def __init__(
-        self,
-        in_dims,
-        hidden_dims,
-        out_dims,
-        num_layers,
-        norm,
-        act,
-        last_norm,
-        dropout=0.0,
+        self, in_dims, hidden_dims, out_dims, num_layers, norm, act, last_norm, dropout=0.0,
     ):
         super(Projection_MLP, self).__init__()
 
@@ -227,9 +199,7 @@ class Projection_MLP(torch.nn.Module):
                 self,
                 "layer{}".format(i + 1),
                 nn.Sequential(
-                    nn.Linear(
-                        self.hidden_dims[i - 1], self.hidden_dims[i], bias=self.bias
-                    ),
+                    nn.Linear(self.hidden_dims[i - 1], self.hidden_dims[i], bias=self.bias),
                     cls_norm(self.hidden_dims[i]),
                     cls_act(),
                     nn.Dropout(dropout),
@@ -247,6 +217,7 @@ class Projection_MLP(torch.nn.Module):
         x = self.lase_layer(x)
 
         return x
+
 
 class GCN_NPCIC(torch.nn.Module):
     def __init__(self, cfg, in_channels, logger=None):
@@ -291,9 +262,12 @@ class GCN_NPCIC(torch.nn.Module):
         return scores
 
 
+from configuration.config_NPCGraphConvNetwork import cfg_gcn
 
-
-def get_gcn(cfg, in_channels, logger):
-        return GCN_NPCIC(cfg, in_channels, logger)
-
-
+if __name__ == "__main__":
+    num_patients, dim_features = (100, 23)
+    inputs = torch.randn(size=(num_patients, dim_features))
+    gcn_model = GCN_NPCIC(cfg=cfg_gcn, in_channels=dim_features).eval()
+    with torch.no_grad():
+        scores = gcn_model(inputs)
+    print(scores.shape)

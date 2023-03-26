@@ -1,0 +1,122 @@
+{
+    "001": {
+        "MLN_mask": "DataSet/NPC_Seg/001/MLN_mask.npy",
+        "T2": "DataSet/NPC_Seg/001/T2.npy",
+        "MLN_mask_bbox": [
+            5,
+            87,
+            93,
+            17,
+            124,
+            157
+        ]
+    },
+    "002": {
+        "MLN_mask": "DataSet/NPC_Seg/002/MLN_mask.npy",
+        "T2": "DataSet/NPC_Seg/002/T2.npy",
+        "MLN_mask_bbox": [
+            5,
+            87,
+            93,
+            17,
+            124,
+            157
+        ]
+    },
+    "003": {
+        "MLN_mask": "DataSet/NPC_Seg/003/MLN_mask.npy",
+        "T2": "DataSet/NPC_Seg/003/T2.npy",
+        "MLN_mask_bbox": [
+            5,
+            87,
+            93,
+            17,
+            124,
+            157
+        ]
+    },
+    "004": {
+        "MLN_mask": "DataSet/NPC_Seg/004/MLN_mask.npy",
+        "T2": "DataSet/NPC_Seg/004/T2.npy",
+        "MLN_mask_bbox": [
+            5,
+            87,
+            93,
+            17,
+            124,
+            157
+        ]
+    },
+    "005": {
+        "MLN_mask": "DataSet/NPC_Seg/005/MLN_mask.npy",
+        "T2": "DataSet/NPC_Seg/005/T2.npy",
+        "MLN_mask_bbox": [
+            5,
+            87,
+            93,
+            17,
+            124,
+            157
+        ]
+    },
+    "006": {
+        "MLN_mask": "DataSet/NPC_Seg/006/MLN_mask.npy",
+        "T2": "DataSet/NPC_Seg/006/T2.npy",
+        "MLN_mask_bbox": [
+            5,
+            87,
+            93,
+            17,
+            124,
+            157
+        ]
+    },
+    "007": {
+        "MLN_mask": "DataSet/NPC_Seg/007/MLN_mask.npy",
+        "T2": "DataSet/NPC_Seg/007/T2.npy",
+        "MLN_mask_bbox": [
+            5,
+            87,
+            93,
+            17,
+            124,
+            157
+        ]
+    },
+    "008": {
+        "MLN_mask": "DataSet/NPC_Seg/008/MLN_mask.npy",
+        "T2": "DataSet/NPC_Seg/008/T2.npy",
+        "MLN_mask_bbox": [
+            5,
+            87,
+            93,
+            17,
+            124,
+            157
+        ]
+    },
+    "009": {
+        "MLN_mask": "DataSet/NPC_Seg/009/MLN_mask.npy",
+        "T2": "DataSet/NPC_Seg/009/T2.npy",
+        "MLN_mask_bbox": [
+            5,
+            87,
+            93,
+            17,
+            124,
+            157
+        ]
+    },
+    "010": {
+        "MLN_mask": "DataSet/NPC_Seg/010/MLN_mask.npy",
+        "T2": "DataSet/NPC_Seg/010/T2.npy",
+        "MLN_mask_bbox": [
+            5,
+            69,
+            77,
+            11,
+            112,
+            135
+        ]
+    }
+}
